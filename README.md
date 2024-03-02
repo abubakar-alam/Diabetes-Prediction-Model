@@ -1,4 +1,4 @@
-It is A diabetes prediction model 
+It is a diabetes prediction model 
 <br>
 used Svm classification model
 <br>
