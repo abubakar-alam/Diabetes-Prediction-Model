@@ -1,0 +1,50 @@
+import pickle
+from sklearn import svm
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import pandas as pd
+
+# Load your dataset
+dataset_path = r'C:\Users\CC\Desktop\diabetes\models\diabetes (1).csv'
+df = pd.read_csv(dataset_path)
+
+# Extract features (X) and target variable (y)
+X = df[['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']]
+y = df['Outcome']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train an SVM model
+model = svm.SVC()
+model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test)
+
+# Evaluate the model (example: accuracy)
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Model Accuracy: {accuracy}')
+
+# Save the trained model using pickle
+model_filename = 'trained_models.pkl'
+with open(model_filename, 'wb') as file:
+    pickle.dump(model, file)
+
+# Example of making a prediction with the saved model
+input_data = (3, 180, 85, 40, 120, 35, 0.8, 40)
+np_array = pd.DataFrame([input_data])  # Create a DataFrame for consistent reshaping
+reshaped = np_array.values.reshape(1, -1)
+
+# Load the saved model
+with open(model_filename, 'rb') as file:
+    loaded_model = pickle.load(file)
+
+# Make a prediction with the loaded model
+prediction = loaded_model.predict(reshaped)
+
+print(prediction)
+if prediction == 0:
+    print('The person is not diabetic')
+else:
+    print('The patient is diabetic')
